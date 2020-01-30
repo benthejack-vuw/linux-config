@@ -1,0 +1,6 @@
+
+domain brighton.scluk.com
+search brighton.scluk.com
+nameserver 192.168.10.3
+nameserver 192.168.10.5
+
