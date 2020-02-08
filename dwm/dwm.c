@@ -832,7 +832,9 @@ drawbar(Monitor *m)
 
 	if ((w = m->ww - sw - x) > bh) {
 		if (m->sel) {
-			drw_setscheme(drw, scheme[m == selmon ? SchemeSelWindow : SchemeNorm]);
+			drw_setscheme(drw, scheme[m == selmon
+			  ? m->sel->isfloating ? SchemeSel : SchemeSelWindow
+			  : SchemeNorm]);
 			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
 			if (m->sel->isfloating)
 				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
@@ -1534,7 +1536,6 @@ restack(Monitor *m)
 				XConfigureWindow(dpy, c->win, CWSibling|CWStackMode, &wc);
 				wc.sibling = c->win;
 			}
-      warpToClient(m->sel);
 	}
 	XSync(dpy, False);
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
@@ -2300,7 +2301,7 @@ view(const Arg *arg)
 
 
 int tagindex(unsigned int tags){
-  for(int i = 0; i < 9; ++i){
+  for(int i = 0; i < 10; ++i){
     if(tags & (1 << i)){
       return i;
     }

@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "mononoki:size=12:antialias=true:autohint=true";
+static char *font = "Source Code Pro for Powerline:size=14:antialias=true:autohint=true";
 static int borderpx = 2;
 
 /*
@@ -157,7 +157,7 @@ static MouseShortcut mshortcuts[] = {
 	/* mask                 button   function        argument       release */
   { ShiftMask,            Button4, kscrollup,      {.i = -1} },
   { ShiftMask,            Button5, kscrolldown,    {.i = -1} },
-	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
+	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0}, 1 },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
 	{ XK_ANY_MOD,           Button5, ttysend,        {.s = "\005"} },
 };

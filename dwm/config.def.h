@@ -46,7 +46,7 @@ static Layout layouts[] = {
 };
 
 /* tagging */
-static Tag tags[2][9] = {
+static Tag tags[2][10] = {
   {
     {.name = "",   .lt = &layouts[0], .mfact = 0.75, .nmaster = 1, .shared = 0},
     {.name = "",   .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 0},
@@ -55,6 +55,7 @@ static Tag tags[2][9] = {
     {.name = "",    .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1},
     {.name = "",    .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1},
     {.name = "",    .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1},
+    {.name = "",   .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1},
     {.name = "",   .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1},
     {.name = "",   .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1}
   },
@@ -66,12 +67,13 @@ static Tag tags[2][9] = {
     {.name = "",    .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1},
     {.name = "",    .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1},
     {.name = "",    .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1},
+    {.name = "",   .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1},
     {.name = "",   .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1},
     {.name = "",   .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1}
   },
 };
 
-static const char *tagsalt[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tagsalt[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -140,7 +142,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_minus,  setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_equal,  setmfact,       {.f = +0.05} },
 	//{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
+	//{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
 	//{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	//{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
@@ -165,6 +167,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
+	TAGKEYS(                        XK_0,                      9)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 };
 

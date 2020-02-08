@@ -2654,6 +2654,7 @@ draw(void)
 	if (term.scr == 0)
   		xdrawcursor(cx, term.c.y, term.line[term.c.y][cx],
   				term.ocx, term.ocy, term.line[term.ocy][term.ocx]);
+
 	term.ocx = cx, term.ocy = term.c.y;
 	xfinishdraw();
 	xximspot(term.ocx, term.ocy);
