@@ -96,7 +96,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int bw, oldbw;
 	unsigned int tags;
-	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
+	int isfixed, isfloating, iscentered, isurgent, neverfocus, oldstate, isfullscreen;
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -121,6 +121,7 @@ struct Tag{
 	float mfact;
 	int nmaster;
 	unsigned short int shared;
+	unsigned short int showbar;
 };
 
 struct Monitor {
@@ -134,7 +135,6 @@ struct Monitor {
 	int wx, wy, ww, wh;   /* window area  */
 	unsigned int sellt;
 	unsigned int tagset;
-	int showbar;
 	int topbar;
 	Client *clients;
 	Client *sel;
@@ -150,6 +150,7 @@ typedef struct {
 	const char *title;
 	unsigned int tags;
 	int isfloating;
+	int iscentered;
 	int monitor;
 } Rule;
 
@@ -186,6 +187,7 @@ static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
 static void focusstack(const Arg *arg);
+static void fullscreen(const Arg *arg);
 static int getrootptr(int *x, int *y);
 static long getstate(Window w);
 static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
@@ -231,6 +233,7 @@ static void tagmon(const Arg *arg);
 static void tile(Monitor *);
 static void togglealttag();
 static void togglebar(const Arg *arg);
+static void refreshbar();
 static void togglefloating(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
@@ -306,7 +309,7 @@ struct NumTags { char limitexceeded[LENGTH(tags[1]) > 31 ? -1 : 1]; };
 
 void
 vpnconnect(const Arg *arg){
-  system("~/.config/dwm/openvpn.sh &");
+  system("~/.config/dwm/startvpn.sh &");
 }
 
 /* function implementations */
@@ -346,6 +349,7 @@ applyrules(Client *c)
 
 	/* rule matching */
 	c->isfloating = 0;
+	c->iscentered = 0;
 	c->tags = 0;
 	XGetClassHint(dpy, c->win, &ch);
 	class    = ch.res_class ? ch.res_class : broken;
@@ -358,6 +362,7 @@ applyrules(Client *c)
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
 			c->isfloating = r->isfloating;
+			c->iscentered = r->iscentered;
 			c->tags |= r->tags;
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
@@ -697,7 +702,6 @@ createmon(void)
 
 	m = ecalloc(1, sizeof(Monitor));
 	m->tagset = 1;
-	m->showbar = showbar;
 	m->topbar = topbar;
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
 	return m;
@@ -843,7 +847,7 @@ drawbar(Monitor *m)
 			drw_rect(drw, x, 0, w, bh, 1, 1);
 		}
 	}
-  
+
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
 
@@ -1165,7 +1169,10 @@ manage(Window w, XWindowAttributes *wa)
 	updatewindowtype(c);
 	updatesizehints(c);
 	updatewmhints(c);
-
+	if (c->iscentered) {
+		c->x = c->mon->mx + (c->mon->mw - WIDTH(c)) / 2;
+		c->y = c->mon->my + (c->mon->mh - HEIGHT(c)) / 2;
+	}
 	XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask|PointerMotionMask);
 	grabbuttons(c, 0);
 	if (!c->isfloating)
@@ -1554,8 +1561,8 @@ run(void)
 
 void
 runAutostart(void) {
-	system("~/.config/dwm/autostart_blocking.sh");
-	system("~/.config/dwm/autostart.sh &");
+	system("~/linux-configuration/config/scripts/autostart_blocking.sh");
+	system("~/linux-configuration/config/scripts/autostart.sh &");
 }
 
 void
@@ -1647,6 +1654,19 @@ setfocus(Client *c)
 	sendevent(c, wmatom[WMTakeFocus]);
 }
 
+Layout *last_layout;
+void
+fullscreen(const Arg *arg)
+{
+	if (selmon->seltag->showbar) {
+		last_layout = selmon->seltag->lt;
+		setlayout(&((Arg) { .v = &layouts[1] }));
+	} else {
+		setlayout(&((Arg) { .v = last_layout }));
+	}
+	togglebar(arg);
+}
+
 void
 setfullscreen(Client *c, int fullscreen)
 {
@@ -1658,7 +1678,7 @@ setfullscreen(Client *c, int fullscreen)
 		c->oldbw = c->bw;
 		c->bw = 0;
 		c->isfloating = 1;
-		resizeclient(c, c->mon->wx, c->mon->wy, c->mon->ww - 2 * c->bw, c->mon->wh - 2 * c->bw);
+		resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
 		XRaiseWindow(dpy, c->win);
 	} else if (!fullscreen && c->isfullscreen){
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
@@ -1671,6 +1691,7 @@ setfullscreen(Client *c, int fullscreen)
 		c->w = c->oldw;
 		c->h = c->oldh;
 		resizeclient(c, c->x, c->y, c->w, c->h);
+		//resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
 		arrange(c->mon);
 	}
 }
@@ -1928,7 +1949,12 @@ togglealttag()
 void
 togglebar(const Arg *arg)
 {
-	selmon->showbar = !selmon->showbar;
+	selmon->seltag->showbar = !selmon->seltag->showbar;
+	refreshbar();
+}
+
+void
+refreshbar() {
 	updatebarpos(selmon);
 	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
 	arrange(selmon);
@@ -2054,7 +2080,7 @@ updatebarpos(Monitor *m)
 {
 	m->wy = m->my;
 	m->wh = m->mh;
-	if (m->showbar) {
+	if (m->seltag->showbar) {
 		m->wh -= bh;
 		m->by = m->topbar ? m->wy : m->wy + m->wh;
 		m->wy = m->topbar ? m->wy + bh : m->wy;
@@ -2241,8 +2267,10 @@ updatewindowtype(Client *c)
 
 	if (state == netatom[NetWMFullscreen])
 		setfullscreen(c, 1);
-	if (wtype == netatom[NetWMWindowTypeDialog])
+	if (wtype == netatom[NetWMWindowTypeDialog]) {
 		c->isfloating = 1;
+		c->iscentered = 1;
+	}
 }
 
 void
@@ -2296,7 +2324,7 @@ view(const Arg *arg)
 		  pullClients(selmon);
   }
 	focus(selmon->stack);
-	arrange(selmon);
+	refreshbar();
 }
 
 
@@ -2349,7 +2377,7 @@ incntag(const Arg *arg)
         pullClients(selmon);
   }
 
-  arrange(selmon);
+  refreshbar();
   focus(selmon->stack);
   warpToClient(selmon->stack);
 }

@@ -1,0 +1,67 @@
+Script started on 2021-05-20 10:12:39+01:00 [TERM="st-256color" TTY="/dev/pts/0" COLUMNS="273" LINES="75"]
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                                                                 ]2;ben@bjack:~/linux-configuration/config]1;..ration/config[0m[27m[24m[J[39m[0m[49m[40m[39m bjack [44m[30m[30m ~/linux-configuration/config [43m[34m[30m  master ●✚ [49m[33m[39m [K[?1h=[?2004hsscripts[?1l>[?2004l
+]2;scripts]1;scripts[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                                                                 ]2;ben@bjack:~/linux-configuration/config/scripts]1;..onfig/scripts[0m[27m[24m[J[39m[0m[49m[40m[39m bjack [44m[30m[30m ~/…/config/scripts [43m[34m[30m  master ●✚ [49m[33m[39m [K[?1h=[?2004hlls[?1l>[?2004l
+]2;ls --color=tty]1;ls[0m[01;31masound.conf[0m  [01;31mautostart_blocking.sh[0m  [01;31mautostart.sh[0m  [01;31mautostartx[0m  [01;31mdhcp_settings_connected[0m  [01;31mdhcp_settings_disconnected[0m  [01;31mlock_screen.sh[0m  [01;31moff[0m  [01;31mrun_mail.sh[0m  [01;31msetup_monitors.sh[0m
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                                                                 ]2;ben@bjack:~/linux-configuration/config/scripts]1;..onfig/scripts[0m[27m[24m[J[39m[0m[49m[40m[39m bjack [44m[30m[30m ~/…/config/scripts [43m[34m[30m  master ●✚ [49m[33m[39m [K[?1h=[?2004hwwhich script[?1l>[?2004l
+]2;which script]1;which/usr/bin/script
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                                                                 ]2;ben@bjack:~/linux-configuration/config/scripts]1;..onfig/scripts[0m[27m[24m[J[39m[0m[49m[40m[39m bjack [44m[30m[30m ~/…/config/scripts [43m[34m[30m  master ●✚ [49m[33m[39m [K[?1h=[?2004hccant  t autostart.sh[1m [0m[0m [?1l>[?2004l
+]2;cat autostart.sh]1;cat#!/bin/bash
+
+synergys --config ~/.config/Synergy/synergy-server.conf
+
+dte(){
+  dte="$(date +"%b %d - %I:%M")"
+  echo -e "$dte"
+}
+
+mem(){
+  memusage="$(free | awk '/Mem/ {printf "%.1f/%.1fGB\n", $3/1024000, $2/1024000 }')"
+  echo -e " $memusage"
+}
+
+cpu(){
+  read cpu a b c previdle rest < /proc/stat
+  prevtotal=$((a+b+c+previdle))
+  sleep 0.5
+  read cpu a b c idle rest < /proc/stat
+  total=$((a+b+c+idle))
+  cpu=$((100*( (total-prevtotal) - (idle-previdle) ) / (total-prevtotal) ))
+  echo -e " `printf %03d $cpu`%"
+}
+
+vpn() {
+  ping -w 1 -c 1 192.168.200.109 > /dev/null
+  RETVAL=$?
+  if [ $RETVAL -eq 0 ]; then
+     echo -e ""
+   else
+     echo -e ""
+  fi
+}
+
+sptfy(){
+  [[ $(sp status) == "Playing" ]] && spsymb=" " || spsymb=" "
+  currentsong=$(sp current-oneline)
+   if [ $? -eq 1 ]
+    then
+      echo -e ""
+    else
+      echo -e "$spsymb $(echo $currentsong | sed -n "s/|/>/p")"
+   fi
+}
+
+bat(){
+  symbs=("" "" "" "" "")
+  batlvl=$(acpi | grep -Po '(\d+)(?=%)')
+  charging=$(acpi | grep -Po '(Charging)|(Unknown)')
+  if [ -z "$charging" ]
+   then
+  	echo -e "$batlvl%"
+   else
+  	echo -e "+$batlvl%"
+  fi 
+}
+
+sound(){
+  soundstatus=$(amixer sget Master | grep -Po '(\[on\])|(\[off\])')
+  volume=$(amixer sget Ma

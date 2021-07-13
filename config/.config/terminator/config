@@ -1,0 +1,44 @@
+[global_config]
+  focus = system
+  title_transmit_bg_color = "#5c3566"
+  title_inactive_fg_color = "#babdb6"
+  title_inactive_bg_color = "#002b36"
+  title_font = Sans 18
+[keybindings]
+[profiles]
+  [[default]]
+    allow_bold = False
+    background_color = "#002b36"
+    cursor_color = "#93a1a1"
+    foreground_color = "#93a1a1"
+    show_titlebar = False
+    scrollbar_position = hidden
+    palette = "#002b36:#dc322f:#859900:#b58900:#268bd2:#6c71c4:#2aa198:#93a1a1:#657b83:#dc322f:#859900:#b58900:#268bd2:#6c71c4:#2aa198:#fdf6e3"
+    copy_on_selection = True
+  [[Base16 Solarized Dark]]
+    allow_bold = False
+    background_color = "#002b36"
+    background_darkness = 0.9
+    background_type = transparent
+    cursor_color = "#93a1a1"
+    font = Sans 20
+    foreground_color = "#93a1a1"
+    scrollbar_position = hidden
+    scrollback_lines = 5000
+    palette = "#002b36:#dc322f:#859900:#b58900:#268bd2:#6c71c4:#2aa198:#93a1a1:#657b83:#dc322f:#859900:#b58900:#268bd2:#6c71c4:#2aa198:#fdf6e3"
+    copy_on_selection = True
+  [[Solarized-light]]
+    background_color = "#fdf6e3"
+    cursor_color = "#aaaaaa"
+    foreground_color = "#657b83"
+    palette = "#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3"
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      profile = Base16 Solarized Dark
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+[plugins]
