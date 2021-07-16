@@ -70,7 +70,7 @@ while true; do
   sleep 1s
 done &
 
-while true; do
-  feh --bg-fill ~/Pictures/Wallpapers/forest_hut.png
-  sleep 10m
-done &
+#while true; do
+  feh --bg-fill ~/Pictures/wallpaper.jpg
+ # sleep 10m
+#done &
