@@ -67,7 +67,7 @@ sound(){
 
 while true; do
 	xsetroot -name "$(sptfy) | $(sound) | $(vpn) | $(cpu) | $(mem) | $(dte)"
-  sleep 1s
+  sleep 0.1s
 done &
 
 while true; do
