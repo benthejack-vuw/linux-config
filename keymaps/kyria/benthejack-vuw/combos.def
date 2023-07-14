@@ -1,0 +1,3 @@
+SUBS(consolelog, "console.log(", KC_C, KC_G)
+SUBS(mkdiv, "<div>\n</div>", KC_D, KC_V)
+SUBS(selectLine, SS_TAP(X_HOME) SS_DOWN(X_LSHIFT) SS_TAP(X_END) SS_UP(X_LSHIFT), KC_M, KC_Z)
