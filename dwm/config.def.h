@@ -41,47 +41,51 @@ static Layout layouts[] = {
 	{ "[  ]",   tile },    /* first entry is default */
 	{ "[  ]",   monocle },
 	{ "[  ]",   col },
+	{ "[ = ]",    row },
+	{ "[ == ]", vgrid },
 	{ "[  ]",   NULL },    /* no layout function means floating behavior */
 	{ NULL,       NULL },
 };
 
+static const char *left0[] = { "zsh", "/home/ben/linux-configuration/config/scripts/tagScripts/left-0.zsh", NULL };
+
 /* tagging */
 static Tag tags[3][10] = {
     {
-        {.name = "", .lt = &layouts[0], .mfact = 0.75, .nmaster = 1, .shared = 0, .showbar = 1},
-        {.name = "",  .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 0, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 2, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
+        {.name = "", .lt = &layouts[0], .mfact = 0.75, .nmaster = 1, .shared = 0, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "",  .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 0, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 2, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
     },
 	{
-        {.name = " ", .lt = &layouts[0], .mfact = 0.25, .nmaster = 3, .shared = 0, .showbar = 1},
-        {.name = "", .lt = &layouts[2], .mfact = 0.5, .nmaster = 4, .shared = 0, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 2, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1}
+        {.name = " ", .lt = &layouts[0], .mfact = 0.75, .nmaster = 1, .shared = 0, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[0], .mfact = 0.75, .nmaster = 1, .shared = 0, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 2, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 1, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1, .ncols  =1 }
     },
     {
-        {.name = "", .lt = &layouts[0], .mfact = 0.75, .nmaster = 1, .shared = 0, .showbar = 1},
-        {.name = "", .lt = &layouts[2], .mfact = 0.5, .nmaster = 4, .shared = 0, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 2, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[0], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
-        {.name = "", .lt = &layouts[1], .mfact = 0.5, .nmaster = 1, .shared = 1, .showbar = 1},
+        {.name = "", .lt = &layouts[4], .mfact = 0.33, .nmaster = 1, .shared = 0, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v = left0 } },
+        {.name = "", .lt = &layouts[3], .mfact = 0.33, .nmaster = 4, .shared = 0, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[3], .mfact = 0.33, .nmaster = 2, .shared = 1, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[3], .mfact = 0.33, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[3], .mfact = 0.33, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[3], .mfact = 0.33, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[3], .mfact = 0.33, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[3], .mfact = 0.33, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[3], .mfact = 0.33, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v=NULL } },
+        {.name = "", .lt = &layouts[3], .mfact = 0.33, .nmaster = 1, .shared = 1, .showbar = 1, .ncols = 2, .init=0, .init_script={ .v=NULL } },
     },
 
 };
@@ -118,23 +122,16 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", tag_unsel_bg, "-nf", tag_unsel_fg, "-sb", tag_sel_bg, "-sf", tag_sel_fg, NULL };
+static const char *dmenucmd[] = { "rofi", "-show", "run" };
 static const char *termcmd[]  = { "st", NULL };
 static const char *calccmd[]  = { "qalculate", NULL };
-static const char *browsercmd[] = { "brave-browser", NULL };
+static const char *browsercmd[] = { "/home/ben/linux-configuration/config/scripts/dmenu/brave.sh", NULL };
 static const char *codecmd[] = { "code", NULL };
 static const char *nautiluscmd[] = { "nautilus", "-w", NULL };
-static const char *spotifycmd[] = { "spotify", NULL };
-static const char *mailcmd[] = { "/home/ben/linux-configuration/config/scripts/run_mail.sh", NULL };
+static const char *powermenucmd[] = { "/home/ben/linux-configuration/config/scripts/dmenu/powerMenu.sh", NULL };
 static const char *lockcmd[] = { "/home/ben/linux-configuration/config/scripts/lock_screen.sh", NULL };
-static const char *spply[] = { "sp", "play", NULL };
-static const char *spnxt[] = { "sp", "next", NULL };
-static const char *splst[] = { "sp", "prev", NULL };
-static const char *downvol[] = { "amixer", "set", "Master", "5%-", NULL };
-static const char *upvol[] = { "amixer", "set", "Master", "5%+", NULL };
-static const char *mutevol[] = { "amixer", "set", "Master", "toggle",     NULL };
 static const char *printscreen[] = { "flameshot", "gui", NULL };
-
+static const char *synergy[] = { "/home/ben/linux-configuration/config/scripts/start-synergy.sh", NULL };
 
 static Key keys[] = {
 	/* modifier                     key                      function              argument */
@@ -143,14 +140,14 @@ static Key keys[] = {
 	{ MODKEY,                       XK_b,                    spawn,               {.v = browsercmd } },
 	{ MODKEY,                       XK_l,                    spawn,               {.v = lockcmd } },
 	{ MODKEY,                       XK_c,                    spawn,               {.v = codecmd } },
-	{ MODKEY,                       XK_m,                    spawn,               {.v = mailcmd } },
 	{ MODKEY,                       XK_e,                    spawn,               {.v = nautiluscmd } },
-	{ MODKEY,                       XK_s,                    spawn,               {.v = spotifycmd } },
-	{ 0,                            XF86XK_AudioLowerVolume, spawn,               {.v = downvol } },
-	{ 0,                            XF86XK_AudioRaiseVolume, spawn,               {.v = upvol } },
-	{ 0,                            XF86XK_AudioMute,        spawn,               {.v = mutevol } },
+	{ MODKEY,                      	XK_p,                    spawn,               {.v = powermenucmd } },
+	{ MODKEY,                      	XK_s,                    spawn,               {.v = synergy } },
+	// { 0,                            XF86XK_AudioLowerVolume, spawn,               {.v = downvol } },
+	// { 0,                            XF86XK_AudioRaiseVolume, spawn,               {.v = upvol } },
+	// { 0,                            XF86XK_AudioMute,        spawn,               {.v = mutevol } },
 	{ 0,                            XK_Print,				 spawn,               {.v = printscreen } },
-	{ MODKEY,                       XK_a,                    spawn,             {.v = calccmd} },
+	{ MODKEY,                       XK_a,                    spawn,               {.v = calccmd} },
 	{ MODKEY|ShiftMask|ControlMask, XK_space,                togglebar,           {0} },
 	{ MODKEY,                       XK_Left,                 focusstack,          {.i = -1 } },
 	{ MODKEY,                       XK_Right,                focusstack,          {.i = +1 } },
@@ -160,6 +157,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Down,                 incntag,             {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_equal,                incnmaster,          {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_minus,                incnmaster,          {.i = -1 } },
+  { MODKEY,                       XK_r,                    incncols,            {.i = +1 } },
+  { MODKEY|ShiftMask,             XK_r,                    incncols,            {.i = -1 } },
 	{ MODKEY,                       XK_minus,                setmfact,            {.f = -0.05} },
 	{ MODKEY,                       XK_equal,                setmfact,            {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_c,                    killclient,          {0} },
@@ -167,11 +166,11 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_space,                cyclelayout,         {.i = +1 } },
 	{ MODKEY,                       XK_f,                    fullscreen,          {0} },
 	{ MODKEY|ShiftMask,             XK_f,                    togglefloating,      {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_Home,                 tagmon,              {.i = +1 } },
- 	{ MODKEY|ShiftMask,             XK_End,                  tagmon,              {.i = -1 } },
-	{ MODKEY,      			        XK_Home,                 focusmon,            {.i = +1 } },
-	{ MODKEY,           			XK_End,                  focusmon,            {.i = -1 } },
-	{ MODKEY,                       XK_n,                    togglealttag,        {0} },
+	{ MODKEY|ShiftMask,             XK_Home,                 tagmon,              {.i = -1 } },
+ 	{ MODKEY|ShiftMask,             XK_End,                  tagmon,              {.i = +1 } },
+	{ MODKEY,         			    XK_Home,             	 focusmon,            {.i = -1 } },
+	{ MODKEY,           			XK_End,                  focusmon,            {.i = +1 } },
+	{ MODKEY,                       XK_n,   	             togglealttag,        {0} },
 	{ MODKEY|ShiftMask,             XK_q,                    quit,                {0} },
 	TAGKEYS(                        XK_1,                                         0)
 	TAGKEYS(                        XK_2,                                         1)
@@ -192,9 +191,9 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button1,        spawn,          {.v = spply } },
-	{ ClkStatusText,        0,              Button4,        spawn,          {.v = spnxt } },
-	{ ClkStatusText,        0,              Button5,        spawn,          {.v = splst } },
+	// { ClkStatusText,        0,              Button1,        spawn,          {.v = spply } },
+	// { ClkStatusText,        0,              Button4,        spawn,          {.v = spnxt } },
+	// { ClkStatusText,        0,              Button5,        spawn,          {.v = splst } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },

@@ -41,7 +41,6 @@
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
 #include <X11/Xft/Xft.h>
-
 #include "drw.h"
 #include "util.h"
 
@@ -57,6 +56,7 @@
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
 #define TAGMASK                 ((1 << LENGTH(tags[0])) - 1)
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
+
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
@@ -116,12 +116,15 @@ typedef struct {
 } Layout;
 
 struct Tag{
-  const char *name;
+    const char *name;
 	Layout *lt;
 	float mfact;
 	int nmaster;
 	unsigned short int shared;
 	unsigned short int showbar;
+	unsigned short int ncols;
+	unsigned short int init;
+	const Arg init_script;
 };
 
 struct Monitor {
@@ -194,6 +197,7 @@ static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void grabbuttons(Client *c, int focused);
 static void grabkeys(void);
 static void incnmaster(const Arg *arg);
+static void incncols(const Arg *arg);
 static int lastseltag();
 static void incntag(const Arg *arg);
 static void keypress(XEvent *e);
@@ -213,6 +217,8 @@ static void resize(Client *c, int x, int y, int w, int h, int interact);
 static void resizeclient(Client *c, int x, int y, int w, int h);
 static void resizemouse(const Arg *arg);
 static void restack(Monitor *m);
+static void row(Monitor *m);
+static void vgrid(Monitor *m);
 static void run(void);
 static void scan(void);
 static int sendevent(Client *c, Atom proto);
@@ -938,7 +944,7 @@ focusmon(const Arg *arg)
 
 	Client * c = selmon->stack;
 	focus(c);
-  warpToClient(c);
+  	warpToClient(c);
 }
 
 void
@@ -1080,6 +1086,13 @@ void
 incnmaster(const Arg *arg)
 {
 	selmon->seltag->nmaster = MAX(selmon->seltag->nmaster + arg->i, 0);
+	arrange(selmon);
+}
+
+void
+incncols(const Arg *arg)
+{
+	selmon->seltag->ncols = MAX(selmon->seltag->ncols + arg->i, 0);
 	arrange(selmon);
 }
 
@@ -1889,27 +1902,86 @@ tagmon(const Arg *arg)
 
 void
 col(Monitor *m) {
-	unsigned int i, n, h, w, x, y,mw;
+	unsigned int i, n, h, wMaster, wStack, wCurrent, x, y;
 	Client *c;
 
 	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-	if(n == 0)
-		return;
-        if(n > m->seltag->nmaster)
-                mw = m->seltag->nmaster ? m->ww * m->seltag->mfact : 0;
-        else
-                mw = m->ww;
+	if(n == 0) return;
+
+    wMaster = n == 1 ? m->ww : (m->ww * m->seltag->mfact) / m->seltag->nmaster;
+    wStack = (m->ww * (1 - m->seltag->mfact)) / (n - m->seltag->nmaster);
+    h = m->wh;
+
 	for(i = x = y = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
-		if(i < m->seltag->nmaster) {
-			 w = (mw - x) / (MIN(n, m->seltag->nmaster)-i);
-                         resize(c, x + m->wx, m->wy, w - (2*c->bw), m->wh - (2*c->bw), False);
-			x += WIDTH(c);
-		}
-		else {
-			h = (m->wh - y) / (n - i);
-			resize(c, x + m->wx, m->wy + y, m->ww - x  - (2*c->bw), h - (2*c->bw), False);
-		y += HEIGHT(c);
-		}
+		wCurrent = i < m->seltag->nmaster ? wMaster : wStack;
+        resize(c, x + m->wx, m->wy, wCurrent - 2*c->bw, h - 2*c->bw, False);
+        x += WIDTH(c);
+	}
+}
+
+void
+row(Monitor *m) {
+	unsigned int i, n, hMaster, hStack, hCurrent, w, x, y;
+	Client *c;
+
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if(n == 0) return;
+
+    hMaster = n == 1 ? m->wh : (m->wh * m->seltag->mfact) / m->seltag->nmaster;
+    hStack = (m->wh * (1 - m->seltag->mfact)) / (n - m->seltag->nmaster);
+    w = m->ww;
+
+
+	for(i = x = y = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+	    hCurrent = i < m->seltag->nmaster ? hMaster : hStack;
+        resize(c, m->wx, y + m->wy, w - 2*c->bw, hCurrent - 2*c->bw, False);
+        y += HEIGHT(c);
+	}
+}
+
+void
+vgrid(Monitor *m) {
+	unsigned int i, n, hMaster, hStack, colsStack, hCurrent, wCurrent, x, y;
+	Client *c;
+
+	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if(n == 0) return;
+
+    hMaster = n == 1 ? m->wh : (m->wh * m->seltag->mfact) / m->seltag->nmaster;
+
+    unsigned int nStack = n - m->seltag->nmaster;
+    float stk = nStack;
+    float cls = m->seltag->ncols;
+    float nrows = (stk/cls) - (int)(stk/cls) > 0 ? (int)(stk/cls)+1 : stk/cls;
+
+    int colsInLastRow = nStack % m->seltag->ncols;
+    colsInLastRow = colsInLastRow == 0 ? m->seltag->ncols : colsInLastRow;
+
+    hStack = (m->wh * (1 - m->seltag->mfact)) / nrows;
+
+	for(i = x = y = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+
+	    if(i < m->seltag->nmaster) {
+            hCurrent = hMaster;
+            wCurrent = m->ww;
+	    } else {
+	        int stackPos = i - m->seltag->nmaster;
+	        int currCols = n - stackPos <= m->seltag->ncols ? colsInLastRow : m->seltag->ncols;
+	        hCurrent = hStack;
+	        wCurrent = m->ww / currCols;
+	    }
+
+        resize(c, x + m->wx, y + m->wy, wCurrent - 2*c->bw, hCurrent - 2*c->bw, False);
+
+        if(i < m->seltag->nmaster) {
+            y += HEIGHT(c);
+        } else {
+            x += WIDTH(c);
+            if(x >= m->ww) {
+              x = 0;
+              y += HEIGHT(c);
+            }
+        }
 	}
 }
 
